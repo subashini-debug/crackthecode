@@ -1,118 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Crack the Code — Team Console</title>
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="app">
-
-    <!-- SCREEN: Join -->
-    <section id="screen-join" class="screen active">
-      <div class="card">
-        <h1>🔐 CRACK THE CODE</h1>
-        <p class="sub">Enter your team name to join the event.</p>
-        <input id="team-name-input" type="text" placeholder="Team name" maxlength="40" />
-        <div id="join-error" class="error"></div>
-        <button id="join-btn">Join Event</button>
-        <p class="hint">Your join is private — only the event admin can see who has joined. Other teams won't see you.</p>
-      </div>
-    </section>
-
-    <!-- SCREEN: Waiting -->
-    <section id="screen-wait" class="screen">
-      <div class="card">
-        <h2>✅ You're in, <span id="wait-team-name"></span>!</h2>
-        <p class="sub">Waiting for the admin to release the next round...</p>
-        <div class="spinner"></div>
-        <div id="wait-lastscore"></div>
-      </div>
-    </section>
-
-    <!-- SCREEN: Round 1 - AI Intelligence Quiz -->
-    <section id="screen-round1" class="screen">
-      <div class="card wide">
-        <div class="round-header">
-          <h2>🧠 Round 1 — AI Intelligence</h2>
-          <div class="timer" id="timer-1">30:00</div>
-        </div>
-        <div id="r1-questions"></div>
-        <button id="r1-submit">Submit Round 1</button>
-      </div>
-    </section>
-
-    <!-- SCREEN: Round 2 - Code Breaker -->
-    <section id="screen-round2" class="screen">
-      <div class="card wide">
-        <div class="round-header">
-          <h2>💻 Round 2 — Code Breaker</h2>
-          <div class="timer" id="timer-2">30:00</div>
-        </div>
-        <div id="r2-questions"></div>
-        <button id="r2-submit">Submit Round 2</button>
-      </div>
-    </section>
-
-    <!-- SCREEN: Round 3 - Rival Zone -->
-    <section id="screen-round3" class="screen">
-      <div class="card wide">
-        <div class="round-header">
-          <h2>⚔️ Round 3 — Rival Zone</h2>
-          <div class="timer" id="timer-3">30:00</div>
-        </div>
-        <p class="sub">This round is run live by your facilitator. Watch for Shield 🛡️ / Scanner 🔎 / Boost ⚡ / Trap 🪤 power-up challenges — the admin will award points directly.</p>
-        <div id="r3-challenges"></div>
-        <button id="r3-submit">Mark Round 3 Complete</button>
-      </div>
-    </section>
-
-    <!-- SCREEN: Round 4 - Final Vault -->
-    <section id="screen-round4" class="screen">
-      <div class="card wide">
-        <div class="round-header">
-          <h2>🔐 Round 4 — Final Vault</h2>
-          <div class="timer" id="timer-4">30:00</div>
-        </div>
-        <div id="r4-content"></div>
-        <div class="field">
-          <label>Stage 1 decoded word:</label>
-          <input id="r4-stage1" type="text" placeholder="Answer" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label>Stage 2 decoded phrase:</label>
-          <input id="r4-stage2" type="text" placeholder="Answer" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label>Final vault code:</label>
-          <input id="r4-final" type="text" placeholder="Final code" autocomplete="off" />
-        </div>
-        <button id="r4-submit">Unlock Vault</button>
-      </div>
-    </section>
-
-    <!-- SCREEN: Result -->
-    <section id="screen-result" class="screen">
-      <div class="card">
-        <h2 id="result-title">Round submitted!</h2>
-        <div id="result-body"></div>
-        <p class="sub">Waiting for the admin to release the next round...</p>
-      </div>
-    </section>
-
-    <!-- SCREEN: Finished -->
-    <section id="screen-finished" class="screen">
-      <div class="card">
-        <h1>🏆 Event Complete</h1>
-        <p class="sub">Thanks for playing Crack the Code! Check the main screen for final results.</p>
-      </div>
-    </section>
-
-  </div>
-
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crack the Code — Team Console</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
