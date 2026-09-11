@@ -36,9 +36,9 @@ export default function App() {
   }, [teamState]);
 
   useEffect(() => {
-    if (teamState.teamToken) {
+    if (teamState.teamToken && API_BASE) {
       socketRef.current = io(API_BASE);
-      
+
       socketRef.current.on('round-released', ({ round, startTime, endTime }) => {
         setGameState(prev => {
           if (prev.submittedRounds.has(round)) return prev;
@@ -46,26 +46,39 @@ export default function App() {
           return prev;
         });
       });
-      
+
       socketRef.current.on('round-closed', ({ round }) => {
+        // Force the active team's Timer to expire immediately (rather than
+        // waiting for its original, now-stale endTime) so whatever answers
+        // they've entered so far get auto-submitted right away, matching
+        // what the admin actually did on the server.
         setGameState(prev => {
           if (prev.activeRound === round) {
-            alert("Time's up for this round! Timer component will auto-submit your answers.");
+            return { ...prev, endTime: Date.now() };
           }
           return prev;
         });
       });
-      
+
       socketRef.current.on('event-reset', () => {
         localStorage.clear();
         window.location.reload();
       });
 
+      // Reconnects can miss events that fired while disconnected (e.g. a
+      // round being released or closed). Re-sync state whenever the socket
+      // (re)connects so a team is never stuck on a stale screen.
+      socketRef.current.on('connect', () => refreshState());
+
       refreshState();
 
       const intervalId = setInterval(() => {
         setGameState(prev => {
-          if (teamState.teamToken && !prev.activeRound && !prev.result && !prev.isFinished) {
+          // Keep re-checking even while showing a result screen: otherwise
+          // a missed 'round-released' event (e.g. from a brief disconnect
+          // or a backgrounded tab) would leave the team stuck forever on
+          // "Round X submitted! Waiting for the admin..." with no recovery.
+          if (teamState.teamToken && !prev.activeRound && !prev.isFinished) {
             refreshState(prev);
           }
           return prev;

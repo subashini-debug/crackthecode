@@ -9,16 +9,20 @@ export default function Timer({ endTime, onExpire }) {
   }, [onExpire]);
 
   useEffect(() => {
+    let expired = false;
+    let interval;
     const tick = () => {
       const remaining = Math.max(0, endTime - Date.now());
       setTimeLeft(remaining);
-      if (remaining <= 0) {
+      if (remaining <= 0 && !expired) {
+        expired = true;
+        clearInterval(interval);
         onExpireRef.current();
       }
     };
-    
+
     tick(); // Initial tick
-    const interval = setInterval(tick, 1000);
+    interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, [endTime]);
 
