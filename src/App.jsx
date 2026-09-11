@@ -116,6 +116,10 @@ export default function App() {
       }
     } catch (e) {
       console.error(e);
+      if (String(e.message || '').includes('Invalid or missing team token') || String(e.message || '').includes('HTTP 401')) {
+        localStorage.clear();
+        setTeamState({ teamId: null, teamToken: null, teamName: null });
+      }
     }
   };
 
