@@ -6,6 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
+    "build": "echo 'No build required for backend'",
     "dev": "node index.js"
   },
   "dependencies": {
