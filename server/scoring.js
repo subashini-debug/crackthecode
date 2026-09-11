@@ -38,20 +38,17 @@ function scoreRound2(challenge, answers) {
 /** Round 4 — Final Vault. answers: { finalCode: "1234" } (stage answers optional/for partial credit) */
 function scoreRound4(challenge, answers) {
   const r4 = challenge.round4;
+  const stages = [1, 2, 3, 4, 5];
+  const stageCorrect = {};
   let score = 0;
-  const stage1Correct = normalize(answers?.stage1) === normalize(r4.stage1.answer);
-  const stage2Correct = normalize(answers?.stage2) === normalize(r4.stage2.answer);
+  for (const n of stages) {
+    const key = `stage${n}`;
+    stageCorrect[key] = normalize(answers?.[key]) === normalize(r4[key].answer);
+    if (stageCorrect[key]) score += 10;
+  }
   const finalCorrect = normalize(answers?.finalCode) === normalize(r4.finalCode);
-
-  if (stage1Correct) score += 20;
-  if (stage2Correct) score += 20;
-  if (finalCorrect) score += 60; // majority of points for cracking the vault
-
-  return {
-    score,
-    maxScore: 100,
-    breakdown: { stage1Correct, stage2Correct, finalCorrect }
-  };
+  if (finalCorrect) score += 50;
+  return { score, maxScore: 100, breakdown: { ...stageCorrect, finalCorrect } };
 }
 
 /** Generic entry point used by the submit route. */

@@ -9,7 +9,7 @@ const db = require('./db');
 const { generateChallengeSets, fallbackSets } = require('./gemini');
 const { scoreSubmission } = require('./scoring');
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4005;
 const ADMIN_KEY = process.env.ADMIN_KEY || 'admin123'; // change in .env for real events
 const ROUND_DURATION_MS = () => (db.get('event.roundDurationMinutes').value() || 30) * 60 * 1000;
 
@@ -75,12 +75,15 @@ function participantSafeRound(set, round) {
     return set.round2.map(q => ({ id: q.id, title: q.title, prompt: q.prompt, codeTemplate: q.codeTemplate, points: q.points }));
   }
   if (round === 3) {
-    return set.round3PowerChallenges || [];
+    return (set.round3PowerChallenges || []).map(p => ({ id: p.id, prompt: p.prompt }));
   }
   if (round === 4) {
     return {
       stage1: { instructions: set.round4.stage1.instructions, cipherText: set.round4.stage1.cipherText },
       stage2: { instructions: set.round4.stage2.instructions, cipherText: set.round4.stage2.cipherText },
+      stage3: { instructions: set.round4.stage3.instructions, cipherText: set.round4.stage3.cipherText },
+      stage4: { instructions: set.round4.stage4.instructions, cipherText: set.round4.stage4.cipherText },
+      stage5: { instructions: set.round4.stage5.instructions, cipherText: set.round4.stage5.cipherText },
       finalInstructions: set.round4.finalInstructions
     };
   }
@@ -315,6 +318,9 @@ app.post('/api/admin/release-round', requireAdmin, (req, res) => {
 app.post('/api/admin/close-round', requireAdmin, (req, res) => {
   const { round } = req.body;
   const r = Number(round);
+  if (![1, 2, 3, 4].includes(r)) return res.status(400).json({ error: 'Invalid round' });
+  const roundInfo = db.get(`event.rounds.${r}`).value();
+  if (!roundInfo || !roundInfo.released) return res.status(400).json({ error: 'Round is not released' });
   db.set(`event.rounds.${r}.endTime`, Date.now()).write();
   io.emit('round-closed', { round: r });
   broadcastLeaderboard();
