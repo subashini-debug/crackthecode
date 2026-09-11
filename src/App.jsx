@@ -28,6 +28,7 @@ export default function App() {
   });
 
   const socketRef = useRef(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (teamState.teamId) localStorage.setItem('ctc_teamId', teamState.teamId);
@@ -137,6 +138,8 @@ export default function App() {
 
   const handleRoundSubmit = async (answers) => {
     const round = gameState.activeRound;
+    if (!round || submittingRef.current) return;
+    submittingRef.current = true;
     try {
       const data = await api('/api/team/submit', { method: 'POST', body: JSON.stringify({ round, answers }) }, teamState.teamToken);
       setGameState(prev => {
@@ -145,7 +148,12 @@ export default function App() {
         return { ...prev, submittedRounds: newSub, activeRound: null, result: { ...data, round } };
       });
     } catch (e) {
-      alert(e.message);
+      // A second submit can race with the timer; refresh instead of showing a
+      // confusing duplicate-submission error.
+      if (!String(e.message || '').includes('already submitted')) alert(e.message);
+      await refreshState();
+    } finally {
+      submittingRef.current = false;
     }
   };
 

@@ -22,7 +22,7 @@ function resolveApiBase() {
   // than failing loudly, so we deliberately do NOT fall back to
   // window.location.origin here.
   if (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
-    return 'http://localhost:4000';
+    return 'http://localhost:4005';
   }
 
   return null; // signals "not configured" — surfaced to the user, not guessed
